@@ -102,7 +102,7 @@ namespace NBlackJack
 
         public Card NextCard(bool show = true)
         {
-            if (position == 51) // last card is position 51
+            if (position == Count - 1) // last card is index is 51 for one deck
             {
                 position = -1; // this should be prevented by shuffling before the end of the deck, as we will loop through dealt cards in same order.
             }
