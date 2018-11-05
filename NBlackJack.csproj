@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BA46AD56-5EE0-42DD-B7BE-00303C45C76B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>NBlackJack</RootNamespace>
+    <AssemblyName>NBlackJack</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cards.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Game.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game.Designer.cs">
+      <DependentUpon>Game.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Players.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Game.resx">
+      <DependentUpon>Game.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="cardImages\10c.png" />
+    <EmbeddedResource Include="cardImages\10d.png" />
+    <EmbeddedResource Include="cardImages\10h.png" />
+    <EmbeddedResource Include="cardImages\10s.png" />
+    <EmbeddedResource Include="cardImages\2c.png" />
+    <EmbeddedResource Include="cardImages\2d.png" />
+    <EmbeddedResource Include="cardImages\2h.png" />
+    <EmbeddedResource Include="cardImages\2s.png" />
+    <EmbeddedResource Include="cardImages\3c.png" />
+    <EmbeddedResource Include="cardImages\3d.png" />
+    <EmbeddedResource Include="cardImages\3h.png" />
+    <EmbeddedResource Include="cardImages\3s.png" />
+    <EmbeddedResource Include="cardImages\4c.png" />
+    <EmbeddedResource Include="cardImages\4d.png" />
+    <EmbeddedResource Include="cardImages\4h.png" />
+    <EmbeddedResource Include="cardImages\4s.png" />
+    <EmbeddedResource Include="cardImages\5c.png" />
+    <EmbeddedResource Include="cardImages\5d.png" />
+    <EmbeddedResource Include="cardImages\5h.png" />
+    <EmbeddedResource Include="cardImages\5s.png" />
+    <EmbeddedResource Include="cardImages\6c.png" />
+    <EmbeddedResource Include="cardImages\6d.png" />
+    <EmbeddedResource Include="cardImages\6h.png" />
+    <EmbeddedResource Include="cardImages\6s.png" />
+    <EmbeddedResource Include="cardImages\7c.png" />
+    <EmbeddedResource Include="cardImages\7d.png" />
+    <EmbeddedResource Include="cardImages\7h.png" />
+    <EmbeddedResource Include="cardImages\7s.png" />
+    <EmbeddedResource Include="cardImages\8c.png" />
+    <EmbeddedResource Include="cardImages\8d.png" />
+    <EmbeddedResource Include="cardImages\8h.png" />
+    <EmbeddedResource Include="cardImages\8s.png" />
+    <EmbeddedResource Include="cardImages\9c.png" />
+    <EmbeddedResource Include="cardImages\9d.png" />
+    <EmbeddedResource Include="cardImages\9h.png" />
+    <EmbeddedResource Include="cardImages\9s.png" />
+    <EmbeddedResource Include="cardImages\Ac.png" />
+    <EmbeddedResource Include="cardImages\Ad.png" />
+    <EmbeddedResource Include="cardImages\Ah.png" />
+    <EmbeddedResource Include="cardImages\As.png" />
+    <EmbeddedResource Include="cardImages\Back.png" />
+    <EmbeddedResource Include="cardImages\Jc.png" />
+    <EmbeddedResource Include="cardImages\Jd.png" />
+    <EmbeddedResource Include="cardImages\Jh.png" />
+    <EmbeddedResource Include="cardImages\Js.png" />
+    <EmbeddedResource Include="cardImages\Kc.png" />
+    <EmbeddedResource Include="cardImages\Kd.png" />
+    <EmbeddedResource Include="cardImages\Kh.png" />
+    <EmbeddedResource Include="cardImages\Ks.png" />
+    <EmbeddedResource Include="cardImages\Qc.png" />
+    <EmbeddedResource Include="cardImages\Qd.png" />
+    <EmbeddedResource Include="cardImages\Qh.png" />
+    <EmbeddedResource Include="cardImages\Qs.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
