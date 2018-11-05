@@ -38,6 +38,7 @@
             this.Hit_button = new System.Windows.Forms.Button();
             this.LastDealtCard_label = new System.Windows.Forms.Label();
             this.Shuffle_button = new System.Windows.Forms.Button();
+            this.Bank_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // PlayerCards_label
@@ -149,12 +150,23 @@
             this.Shuffle_button.UseVisualStyleBackColor = true;
             this.Shuffle_button.Click += new System.EventHandler(this.Shuffle_button_Click);
             // 
+            // Bank_label
+            // 
+            this.Bank_label.AutoSize = true;
+            this.Bank_label.Location = new System.Drawing.Point(424, 67);
+            this.Bank_label.Margin = new System.Windows.Forms.Padding(0);
+            this.Bank_label.Name = "Bank_label";
+            this.Bank_label.Size = new System.Drawing.Size(46, 13);
+            this.Bank_label.TabIndex = 39;
+            this.Bank_label.Text = "$100.00";
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.ForestGreen;
             this.ClientSize = new System.Drawing.Size(499, 376);
+            this.Controls.Add(this.Bank_label);
             this.Controls.Add(this.PlayerCards_label);
             this.Controls.Add(this.DealerCards_label);
             this.Controls.Add(this.Stand_button);
@@ -184,7 +196,8 @@
         public System.Windows.Forms.Label DealerTotal_label;
         public System.Windows.Forms.Button DealHand_button;
         public System.Windows.Forms.Button Hit_button;        
-        public System.Windows.Forms.Label LastDealtCard_label;        
+        public System.Windows.Forms.Label LastDealtCard_label;
+        private System.Windows.Forms.Label Bank_label;
     }
 }
 

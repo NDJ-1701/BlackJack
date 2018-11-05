@@ -21,6 +21,16 @@ namespace NBlackJack
         {
             InitializeComponent();
 
+            // this attempts to update settings that would be thrown away when running a newer version of the program.
+            // "UpdateSettings" is a setting that defaults to true, so if settings have been wiped then it will be true.
+            // Update and then set to false. Settings files are saved in the windows AppData folder.
+            if (Properties.Settings.Default.UpdateSettings)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                Properties.Settings.Default.Save();
+            }
+
             deck = new Deck();
             dealer = new Dealer();
             player = new Player();
@@ -28,6 +38,25 @@ namespace NBlackJack
             players.Add(player);
             Result_label.Text = "";
             UpdateTable();
+
+            double currentWinnings = Properties.Settings.Default.score;
+            Bank_label.Text = "$" + currentWinnings.ToString() + ".00";
+        }
+
+        bool openHand = false;
+        private void SaveScore(double modifier, bool setOpenHand = false)
+        {
+            if (openHand || setOpenHand) // all this wonkiness is to prevent double modifying the score, since "updatescore" can currently happen more than once per hand.
+            {
+                openHand = false;
+                if (setOpenHand)
+                    openHand = true;
+
+                double bank = Properties.Settings.Default.score;
+                bank = bank + modifier;
+                Properties.Settings.Default.score = bank;
+                Bank_label.Text = "$" + bank.ToString() + ".00";
+            }
         }
 
         private bool UpdateScore(bool force = false) // returns true if a final score is released.
@@ -45,18 +74,33 @@ namespace NBlackJack
                 }
                 else
                 {
+                    double scoreModifier = 0.0;
                     if (pScore == 21 && dScore == 21 || dScore == pScore)
+                    {
                         Result_label.Text = "PUSH";
+                        scoreModifier += 1.0;
+                    }
                     else if (pScore == 21)
+                    {
                         Result_label.Text = "21!";
+                        scoreModifier += 2.0;
+                    }
                     else if (dScore == 21 || pScore > 21 || (dScore > pScore && dScore < 21))
+                    {
                         Result_label.Text = "LOSS";
+                    }
                     else if (dScore < pScore || dScore > 21)
+                    {
                         Result_label.Text = "WIN";
+                        scoreModifier += 2.0;
+                    }
                     else
                         Result_label.Text = "Uhoh@#$2";
 
+                    SaveScore(scoreModifier);
+
                     dealer.cards[0].shown = true;
+                    DealerTotal_label.Text = dScore.ToString();
                     UpdateCardPictures();
                     UpdateCardStrings();
                     Hit_button.Enabled = false;
@@ -124,6 +168,9 @@ namespace NBlackJack
             Hit_button.Enabled = true;
             Stand_button.Enabled = true;
             UpdateTable();
+
+            SaveScore(-1.0, true); // charge the player a buck for the hand.
+
             if (player.Score() == 21)
                 Stand_button_Click(null, null);
         }
@@ -157,7 +204,7 @@ namespace NBlackJack
         }
 
         private void Hit_button_Click(object sender, EventArgs e)
-        {
+        {   
             Hit(player.seatNumber);
             if (Result_label.Text.Equals("") && player.Score() == 21)
                 Stand_button_Click(null, null);
