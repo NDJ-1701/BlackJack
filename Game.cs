@@ -56,6 +56,7 @@ namespace NBlackJack
                 bank = bank + modifier;
                 Properties.Settings.Default.score = bank;
                 Bank_label.Text = "$" + bank.ToString() + ".00";
+                Properties.Settings.Default.Save();
             }
         }
 
