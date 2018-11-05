@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NBlackJack
@@ -101,7 +96,7 @@ namespace NBlackJack
                     SaveScore(scoreModifier);
 
                     dealer.cards[0].shown = true;
-                    DealerTotal_label.Text = dScore.ToString();
+                    DealerTotal_label.Text = dealer.Score().ToString();
                     UpdateCardPictures();
                     UpdateCardStrings();
                     Hit_button.Enabled = false;
