@@ -37,12 +37,12 @@
             // Player_label
             // 
             this.Player_label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Player_label.AutoSize = true;
-            this.Player_label.Location = new System.Drawing.Point(119, 127);
+            this.Player_label.Location = new System.Drawing.Point(99, 127);
             this.Player_label.Name = "Player_label";
-            this.Player_label.Size = new System.Drawing.Size(76, 13);
+            this.Player_label.Size = new System.Drawing.Size(96, 13);
             this.Player_label.TabIndex = 36;
             this.Player_label.Text = "Player\'s Cards:";
+            this.Player_label.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // PlayerTotal_label
             // 

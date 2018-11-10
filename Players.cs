@@ -8,11 +8,21 @@ namespace NBlackJack
 {
     public class Player
     {
+        public string name;
         public Hand cards = new Hand();
-        public Seat seat = new Seat(); // this will contain the displays of the player state (cards etc)
+        public Seat seat; // this will contain the displays of the player state (cards etc)
         public int seatNumber = 1;
         public bool alreadyLost = false;
-        public string name = "Player";
+
+        public Player(string name)
+        {
+            this.name = name;
+            seat = new Seat(name);
+        }
+
+        public Player()
+        {
+        }
 
         public int Total()
         {
@@ -46,10 +56,10 @@ namespace NBlackJack
 
     public class Dealer : Player // until something changes, there's no reason this isn't just a player with a set dealer flag.
     {
-        public Dealer()
+        public Dealer(string name = "Dealer")
         {
             seatNumber = 0;
-            name = "Dealer";
+            seat = new Seat(name);
         }
 
         public bool HasAce()

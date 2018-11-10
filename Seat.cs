@@ -15,9 +15,10 @@ namespace NBlackJack
         private List<PictureBox> visibleCards = new List<PictureBox>();
         private PictureBox blankCard = new CardPicture();
 
-        public Seat()
+        public Seat(string name)
         {
             InitializeComponent();
+            Player_label.Text = name + "'s cards:";
         }
         public void AddCard(Card card, int cardNum)
         { 

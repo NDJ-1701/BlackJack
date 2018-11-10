@@ -8,8 +8,8 @@ namespace NBlackJack
     public partial class Game : Form
     {
         public Deck deck = new Deck();
-        public Player player = new Player();
-        public Dealer dealer = new Dealer();
+        public Player player;
+        public Dealer dealer;
         public List<Player> players = new List<Player>(); // index is seat number
 
         public Game()
@@ -27,8 +27,10 @@ namespace NBlackJack
             }
 
             /// add players to player list
+            dealer = new Dealer();
             players.Add(dealer); // seat number is order of addition the player list
             dealer.seatNumber = players.IndexOf(dealer); // unnecessary because we are adding them in order, but leaving here to prove a point.
+            player = new Player("Player");
             players.Add(player);
             player.seatNumber = players.IndexOf(player);
 
