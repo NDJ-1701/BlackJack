@@ -7,10 +7,10 @@ namespace NBlackJack
 {
     public partial class Game : Form
     {
-        public Deck deck;
-        public Player player;
-        public Dealer dealer;
-        public List<Player> players = new List<Player>();
+        public Deck deck = new Deck();
+        public Player player = new Player();
+        public Dealer dealer = new Dealer();
+        public List<Player> players = new List<Player>(); // index is seat number
 
         public Game()
         {
@@ -26,41 +26,40 @@ namespace NBlackJack
                 Properties.Settings.Default.Save();
             }
 
-            deck = new Deck();
-            dealer = new Dealer();
-            player = new Player();
-            players.Add(dealer);
+            /// add players to player list
+            players.Add(dealer); // seat number is order of addition the player list
+            dealer.seatNumber = players.IndexOf(dealer); // unnecessary because we are adding them in order, but leaving here to prove a point.
             players.Add(player);
+            player.seatNumber = players.IndexOf(player);
+
+            /// set seat locations for each player.
+            // add dealer seat to upper left (location is default 0,0)
+            Controls.Add(dealer.seat);
+            // add player seat to bottom left by taking form height and subtracting seat height
+            player.seat.Location = new Point(0, this.ClientRectangle.Height - player.seat.Size.Height);
+            Controls.Add(player.seat);
+
             Result_label.Text = "";
             UpdateTable();
 
-            double currentWinnings = Properties.Settings.Default.score;
-            Bank_label.Text = "$" + currentWinnings.ToString() + ".00";
+            SaveScore(); // also prints existing score.
         }
-
-        bool openHand = false;
-        private void SaveScore(double modifier, bool setOpenHand = false)
+        
+        private void SaveScore(double modifier = 0)
         {
-            if (openHand || setOpenHand) // all this wonkiness is to prevent double modifying the score, since "updatescore" can currently happen more than once per hand.
-            {
-                openHand = false;
-                if (setOpenHand)
-                    openHand = true;
-
                 double bank = Properties.Settings.Default.score;
                 bank = bank + modifier;
                 Properties.Settings.Default.score = bank;
-                Bank_label.Text = "$" + bank.ToString() + ".00";
+                Bank_label.Text = "$" + String.Format("{0:0.00}", bank);
                 Properties.Settings.Default.Save();
-            }
         }
 
         private bool UpdateScore(bool force = false) // returns true if a final score is released.
         {
-            int dScore = dealer.Score();
-            int pScore = player.Score();
-            DealerTotal_label.Text = (dScore > 0) ? dScore.ToString() : "";
-            PlayerTotal_label.Text = (pScore > 0) ? pScore.ToString() : "";
+            int dScore = dealer.Total();
+            int pScore = player.Total();
+            dealer.seat.SetTotal(dealer.Total());
+            player.seat.SetTotal(player.Total());
             
             if (pScore >= 21 || dScore >= 21 || force) // all of this is super ugly. I would change it all if there were more than one player.
             {
@@ -79,7 +78,7 @@ namespace NBlackJack
                     else if (pScore == 21)
                     {
                         Result_label.Text = "21!";
-                        scoreModifier += 2.0;
+                        scoreModifier += 2.5;
                     }
                     else if (dScore == 21 || pScore > 21 || (dScore > pScore && dScore < 21))
                     {
@@ -96,9 +95,8 @@ namespace NBlackJack
                     SaveScore(scoreModifier);
 
                     dealer.cards[0].shown = true;
-                    DealerTotal_label.Text = dealer.Score().ToString();
+                    dealer.seat.SetTotal(dealer.Total());
                     UpdateCardPictures();
-                    UpdateCardStrings();
                     Hit_button.Enabled = false;
                     Stand_button.Enabled = false;
                     return true;
@@ -107,42 +105,15 @@ namespace NBlackJack
             return false;
         }
 
-        private void UpdateCardStrings()
-        {
-            DealerCards_label.Text = String.Join(", ", dealer.cards.Names());
-            PlayerCards_label.Text = String.Join(", ", player.cards.Names());
-            int deckPos = deck.position;
-            LastDealtCard_label.Text = (deckPos >= 0) ? deck[deckPos].Name() : "";
-        }
-
-        private List<PictureBox> visibleCards = new List<PictureBox>();
-        private PictureBox blankCard = new CardPicture();
-        private void AddCard(Card card, int cardNum, int seatNum)
-        {
-            var cardPic = (card.shown)? card.Picture() : blankCard;
-            cardPic.Location = new Point(100 + 24 * cardNum, 50 + 208 * seatNum);
-            Controls.Add(cardPic);
-            cardPic.BringToFront();
-            visibleCards.Add(cardPic);
-            LastDealtCard_label.Text = card.Name();
-        }
-
         private void UpdateCardPictures()
         {
-            // remove old cards
-            foreach (PictureBox card in visibleCards)
-            {
-                Controls.Remove(card);
-            }
-            visibleCards.Clear();
+            int deckPos = deck.position;
+            LastDealtCard_label.Text = (deckPos >= 0) ? deck[deckPos].Name() : "";
 
             // add cards from all players
-            foreach(Player p in players)
+            foreach (Player p in players)
             {
-                for (int cardNum = 0; cardNum < p.cards.Count; cardNum++)
-                {
-                    AddCard(p.cards[cardNum],cardNum, p.seatNumber);
-                }
+                p.seat.AddCards(p.cards);
             }
         }
 
@@ -150,30 +121,30 @@ namespace NBlackJack
         {
             UpdateScore();
             UpdateCardPictures();
-            UpdateCardStrings();
         }
 
-        private void DealHand()
+        private void DealHand_button_Click(object sender, EventArgs e)
         {
-            // in real life they are probably handed out one at a time,
-            // I don't think this makes a difference (even for counters) because they are dealt upside down
-            // until the last card which is the dealer's non-hole card.
-            player.Hand(deck.NextCard(), deck.NextCard()); 
-            dealer.Hand(deck.NextCard(false), deck.NextCard());
+            var newCards = new List<Hand>();
+            for (int i = 0; i < players.Count; i++)
+                newCards.Add(new Hand());
+            for (int i = 0; i < (players.Count * 2); i++)
+            {
+                newCards[i % players.Count].Add(deck.NextCard());
+            }
+            dealer.cards = newCards[dealer.seatNumber];
+            dealer.cards[0].shown = false;
+            player.cards = newCards[player.seatNumber];
+
             Result_label.Text = "";
             Hit_button.Enabled = true;
             Stand_button.Enabled = true;
             UpdateTable();
 
-            SaveScore(-1.0, true); // charge the player a buck for the hand.
+            SaveScore(-1.0); // charge the player a buck for the hand.
 
-            if (player.Score() == 21)
+            if (player.Total() == 21)
                 Stand_button_Click(null, null);
-        }
-
-        private void DealHand_button_Click(object sender, EventArgs e)
-        {
-            DealHand();
         }
 
         private void Shuffle()
@@ -181,6 +152,7 @@ namespace NBlackJack
             foreach (Player p in players)
                 p.cards.Clear();
             Result_label.Text = "";
+            LastDealtCard_label.Text = "";
             deck.Shuffle();
             UpdateTable();            
         }
@@ -190,54 +162,55 @@ namespace NBlackJack
             Shuffle();
         }
 
-        private void Hit(int seat)
+        private void DealCard(int seat)
         {
             Card nextCard = deck.NextCard();
             Player p = players[seat];
-            p.cards.Add(nextCard);
-            AddCard(nextCard, p.cards.Count - 1, seat);
-            UpdateScore();
+            p.cards.Add(nextCard); // add card to players hand
+            p.seat.AddCard(nextCard, p.cards.Count - 1); // display card
+
+            LastDealtCard_label.Text = nextCard.Name();
         }
 
         private void Hit_button_Click(object sender, EventArgs e)
         {   
-            Hit(player.seatNumber);
-            if (Result_label.Text.Equals("") && player.Score() == 21)
-                Stand_button_Click(null, null);
+            DealCard(player.seatNumber);
+            if (Result_label.Text.Equals("") && player.Total() == 21)
+                Stand_button_Click(null, null); // score will update in stand
+            else
+                UpdateScore();
         }
 
         private void Stand()
         {
             if (UpdateScore()) // will update score and return true if there is already a result.
                 return;
-            int total = dealer.Score();
+            int total = dealer.Total();
             if (total < 17)
             {
-                Hit(0);
-                Stand();
+                DealCard(0);
+                Stand(); // player still stands
                 return;
             }
             if (total == 17)
             {
                 if (dealer.HasAce())
                 {
-                    Hit(0);
-                    Stand();
+                    DealCard(0);
+                    Stand(); // player still stands
                     return;
                 }
             }
 
-            UpdateScore(true); // force a result, dealer stands.
+            UpdateScore(true); // dealer stands, force a result.
         }
 
         private void Stand_button_Click(object sender, EventArgs e)
         {
             dealer.cards[0].shown = true;
-            UpdateCardStrings();
             UpdateCardPictures();
 
-            if (!UpdateScore())
-                Stand();
+            Stand();
         }
     }
 }

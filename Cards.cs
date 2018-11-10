@@ -11,7 +11,6 @@ namespace NBlackJack
         {
             Bitmap bmp = new Bitmap(System.Reflection.Assembly.GetEntryAssembly().
                 GetManifestResourceStream("NBlackJack.cardImages." + name + ".png"));
-
             Size = new Size(73, 98);
             Image = bmp;
             Name = "card"; // in case later we want to scan screen for card control types; currently I'm saving them for deletion.

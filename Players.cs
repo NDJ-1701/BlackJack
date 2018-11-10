@@ -9,13 +9,15 @@ namespace NBlackJack
     public class Player
     {
         public Hand cards = new Hand();
+        public Seat seat = new Seat(); // this will contain the displays of the player state (cards etc)
         public int seatNumber = 1;
         public bool alreadyLost = false;
+        public string name = "Player";
 
-        public int Score()
+        public int Total()
         {
             int aces = 0;
-            int score = 0;
+            int total = 0;
             foreach(Card card in cards)
             {
                 if (!card.shown)
@@ -25,29 +27,20 @@ namespace NBlackJack
                     aces++;
                     continue;
                 }
-                score += card.value;
+                total += card.value;
             }
             if (aces > 0)
             {
                 // aces besides the first are all 1 (because two at 11 would lose)
                 for (int i = 1; i < aces; i++)
-                    score++;
+                    total++;
                 // the last ace is either 1 or 11, whichever is better
-                if (score + 11 > 21)
-                    score++;
+                if (total + 11 > 21)
+                    total++;
                 else
-                    score += 11;
+                    total += 11;
             }
-            return score;
-        }
-
-        public void Hand(params Card[] hand) // for replacing player's hand.
-        {
-            cards = new Hand();
-            foreach(Card c in hand)
-            {
-                cards.Add(c);
-            }
+            return total;
         }
     }
 
@@ -56,6 +49,7 @@ namespace NBlackJack
         public Dealer()
         {
             seatNumber = 0;
+            name = "Dealer";
         }
 
         public bool HasAce()
