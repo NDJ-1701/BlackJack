@@ -71,40 +71,43 @@ namespace NBlackJack
                 }
                 else
                 {
-                    double scoreModifier = 0.0;
+                    double scoreModifier; ;
                     if (pScore == 21 && dScore == 21 || dScore == pScore)
                     {
-                        Result_label.Text = "PUSH";
-                        scoreModifier += 1.0;
-                    }
-                    else if (pScore == 21)
-                    {
-                        Result_label.Text = "21!";
-                        scoreModifier += 2.5;
+                        scoreModifier = 1.0;
                     }
                     else if (dScore == 21 || pScore > 21 || (dScore > pScore && dScore < 21))
                     {
-                        Result_label.Text = "LOSS";
+                        scoreModifier = 0.0;
                     }
                     else if (dScore < pScore || dScore > 21)
                     {
-                        Result_label.Text = "WIN";
-                        scoreModifier += 2.0;
+                        scoreModifier = 2.0;
                     }
                     else
-                        Result_label.Text = "Uhoh@#$2";
-
-                    SaveScore(scoreModifier);
-
-                    dealer.cards[0].shown = true;
-                    dealer.seat.SetTotal(dealer.Total());
-                    UpdateCardPictures();
-                    Hit_button.Enabled = false;
-                    Stand_button.Enabled = false;
+                        scoreModifier = 99.9; // error marker value: we should both learn to do try:catch etc properly.
+                    
+                    EndOfHand(scoreModifier);
                     return true;
                 }
             }
             return false;
+        }
+
+        private void EndOfHand(double scoreModifier)
+        {
+            Result_label.Text = 
+                scoreModifier == 2.5 ? "21!" :
+                scoreModifier == 1.0 ? "PUSH" :
+                scoreModifier == 2.0 ? "WIN" : 
+                scoreModifier == 0.0 ? "LOSS" : "Uhoh@#$2";
+
+            SaveScore(scoreModifier);
+            dealer.cards[0].shown = true;
+            dealer.seat.SetTotal(dealer.Total());
+            UpdateCardPictures();
+            Hit_button.Enabled = false;
+            Stand_button.Enabled = false;
         }
 
         private void UpdateCardPictures()
@@ -145,8 +148,18 @@ namespace NBlackJack
 
             SaveScore(-1.0); // charge the player a buck for the hand.
 
-            if (player.Total() == 21)
-                Stand_button_Click(null, null);
+            // Process Naturals
+            // Can't use Total() because that doesn't count unshown cards.
+            if (dealer.cards[0].value == 10 && dealer.cards[1].value == 1 ||
+                dealer.cards[0].value == 1 && dealer.cards[1].value == 10)
+            {
+                if (player.Total() == 21)
+                    EndOfHand(1.0);
+                else
+                    EndOfHand(0.0);
+            }
+            else if (player.Total() == 21)
+                EndOfHand(2.5);
         }
 
         private void Shuffle()
